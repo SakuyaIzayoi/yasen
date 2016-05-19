@@ -14,12 +14,10 @@ func main() {
 	importDB()
 	fmt.Println("Done")
 
-}
+	name := getFullShipName(192)
 
-func checkErr(err error) {
-	if err != nil {
-		panic(err)
-	}
+	fmt.Println(name)
+
 }
 
 type Ship struct {
