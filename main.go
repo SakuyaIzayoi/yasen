@@ -29,6 +29,7 @@ type Ship struct {
 		NameKanji  string `json:"ja_jp"`
 		NameKana   string `json:"ja_kana"`
 		NameRomaji string `json:"ja_romaji"`
+		Suffix     int    `json:"suffix"`
 	} `json:"name"`
 	Stat struct {
 		Fire       int `json:"fire"`
@@ -74,10 +75,11 @@ func importDB() {
 		checkErr(err)
 
 		result, err := db.Exec(
-			"INSERT INTO ship VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24)",
+			"INSERT INTO ship VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25)",
 			ship.Id,
 			ship.No,
 			ship.Name.NameKanji,
+			ship.Name.Suffix,
 			ship.Stat.Fire,
 			ship.Stat.FireMax,
 			ship.Stat.Torpedo,
