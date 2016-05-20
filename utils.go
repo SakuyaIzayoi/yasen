@@ -10,6 +10,8 @@ func getFullShipName(id int) string {
 	db, err := sql.Open("sqlite3", "./test.db")
 	checkErr(err)
 
+	defer db.Close()
+
 	rows, err := db.Query("SELECT name, name_en, suffix FROM ship WHERE shipid = $1", id)
 	checkErr(err)
 
