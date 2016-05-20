@@ -61,6 +61,14 @@ func importDB() {
 
 	defer file.Close()
 
+	db, err := sql.Open("sqlite3", "./test.db")
+	checkErr(err)
+
+	_, err = db.Exec("BEGIN TRANSACTION")
+	checkErr(err)
+
+	defer db.Close()
+
 	// Scan in the JSON, parse it, and send it to the DB
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
@@ -68,9 +76,6 @@ func importDB() {
 		var ship Ship
 
 		err := json.Unmarshal([]byte(str), &ship)
-		checkErr(err)
-
-		db, err := sql.Open("sqlite3", "./test.db")
 		checkErr(err)
 
 		result, err := db.Exec(
@@ -109,6 +114,9 @@ func importDB() {
 			checkErr(err)
 		}
 	}
+
+	_, err = db.Exec("END TRANSACTION")
+	checkErr(err)
 
 	checkErr(scanner.Err())
 }
