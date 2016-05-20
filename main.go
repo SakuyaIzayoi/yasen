@@ -78,7 +78,7 @@ func importDB() {
 		err := json.Unmarshal([]byte(str), &ship)
 		checkErr(err)
 
-		result, err := db.Exec(
+		_, err = db.Exec(
 			"INSERT INTO ship VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26)",
 			ship.Id,
 			ship.No,
@@ -108,15 +108,9 @@ func importDB() {
 			ship.Stat.LuckMax,
 		)
 		checkErr(err)
-
-		if result != nil {
-			_, err := result.RowsAffected()
-			checkErr(err)
-		}
 	}
+	checkErr(scanner.Err())
 
 	_, err = db.Exec("END TRANSACTION")
 	checkErr(err)
-
-	checkErr(scanner.Err())
 }
