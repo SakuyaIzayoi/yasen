@@ -7,6 +7,7 @@ import (
 	"fmt"
 	_ "github.com/mattn/go-sqlite3"
 	"os"
+	"strings"
 )
 
 func main() {
@@ -77,7 +78,7 @@ func importDB() {
 			ship.Id,
 			ship.No,
 			ship.Name.NameKanji,
-			ship.Name.NameRomaji,
+			strings.Title(ship.Name.NameRomaji),
 			ship.Name.Suffix,
 			ship.Stat.Fire,
 			ship.Stat.FireMax,
