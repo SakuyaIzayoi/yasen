@@ -14,11 +14,6 @@ func main() {
 	fmt.Println("Importing ship data")
 	importDB()
 	fmt.Println("Done")
-
-	name := getFullShipName(192)
-
-	fmt.Println(name)
-
 }
 
 type Ship struct {
@@ -78,12 +73,16 @@ func importDB() {
 		err := json.Unmarshal([]byte(str), &ship)
 		checkErr(err)
 
+		if ship.Name.NameRomaji == "" {
+			ship.Name.NameRomaji = ship.Name.NameKanji
+		}
+
 		_, err = db.Exec(
 			"INSERT INTO ship VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26)",
 			ship.Id,
 			ship.No,
 			ship.Name.NameKanji,
-			strings.Title(ship.Name.NameRomaji),
+			strings.Title(ship.Name.NameRomaji)+getSuffixString(ship.Name.Suffix),
 			ship.Name.Suffix,
 			ship.Stat.Fire,
 			ship.Stat.FireMax,
