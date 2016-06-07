@@ -56,7 +56,7 @@ func importDB() {
 
 	defer file.Close()
 
-	db, err := sql.Open("sqlite3", "./test.db")
+	db, err := sql.Open("sqlite3", "./db.sqlite3")
 	checkErr(err)
 
 	_, err = db.Exec("BEGIN TRANSACTION")
