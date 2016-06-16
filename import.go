@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"database/sql"
 	"encoding/json"
+	"fmt"
 	_ "github.com/mattn/go-sqlite3"
 	"os"
 	"strings"
@@ -43,10 +44,31 @@ type Ship struct {
 	} `json:"stat"`
 }
 
-func importShips() {
-	file, err := os.Open("./database/db/ships.json")
-	checkErr(err)
+type Item struct {
+	Id     int `json:"id"`
+	Rarity int `json:"rarity"`
+	Type   int `json:"type"`
+	Name   struct {
+		NameKanji string `json:"ja_jp"`
+	} `json:"name"`
+	Stat struct {
+		Fire     int  `json:"fire"`
+		Torpedo  int  `json:"torpedo"`
+		Bomb     int  `json:"bomb"`
+		Asw      int  `json:"asw"`
+		AA       int  `json:"aa"`
+		Armor    int8 `json:"armor"`
+		Evasion  int8 `json:"evasion"`
+		Hit      int8 `json:"hit"`
+		Los      int  `json:"los"`
+		Range    int  `json:"range,omitempty"`
+		Distance int  `json:"distance"`
+	} `json:"stat"`
+}
 
+func importItems() {
+	file, err := os.Open("./database/db/items.json")
+	checkErr(err)
 	defer file.Close()
 
 	db, err := sql.Open("sqlite3", "./db.sqlite3")
@@ -54,7 +76,53 @@ func importShips() {
 
 	_, err = db.Exec("BEGIN TRANSACTION")
 	checkErr(err)
+	defer db.Close()
 
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+		str := scanner.Text()
+		var item Item
+
+		fmt.Println(str)
+		err := json.Unmarshal([]byte(str), &item)
+		checkErr(err)
+
+		_, err = db.Exec(
+			"INSERT INTO item VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)",
+			item.Id,
+			item.Rarity,
+			item.Type,
+			item.Name.NameKanji,
+			item.Stat.Fire,
+			item.Stat.Torpedo,
+			item.Stat.Bomb,
+			item.Stat.Asw,
+			item.Stat.AA,
+			item.Stat.Armor,
+			item.Stat.Evasion,
+			item.Stat.Hit,
+			item.Stat.Los,
+			item.Stat.Range,
+			item.Stat.Distance,
+		)
+		checkErr(err)
+	}
+	checkErr(scanner.Err())
+
+	_, err = db.Exec("END TRANSACTION")
+	checkErr(err)
+}
+
+func importShips() {
+	file, err := os.Open("./database/db/ships.json")
+	checkErr(err)
+	defer file.Close()
+
+	db, err := sql.Open("sqlite3", "./db.sqlite3")
+	checkErr(err)
+
+	_, err = db.Exec("BEGIN TRANSACTION")
+	checkErr(err)
 	defer db.Close()
 
 	// Scan in the JSON, parse it, and send it to the DB
