@@ -10,8 +10,13 @@ import (
 	"strings"
 )
 
+/*
+Ship struct
+	Contains all ship details including stats, equippables, and remodel
+	information
+*/
 type Ship struct {
-	Id   int `json:"id"`
+	ID   int `json:"id"`
 	No   int `json:"no"`
 	Name struct {
 		NameKanji  string `json:"ja_jp"`
@@ -44,8 +49,12 @@ type Ship struct {
 	} `json:"stat"`
 }
 
+/*
+Item struct
+	Contains item details such as stat bonuses and equip groups
+*/
 type Item struct {
-	Id     int `json:"id"`
+	ID     int `json:"id"`
 	Rarity int `json:"rarity"`
 	Type   int `json:"type"`
 	Name   struct {
@@ -89,7 +98,7 @@ func importItems() {
 
 		_, err = db.Exec(
 			"INSERT INTO item VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)",
-			item.Id,
+			item.ID,
 			item.Rarity,
 			item.Type,
 			item.Name.NameKanji,
@@ -140,7 +149,7 @@ func importShips() {
 
 		_, err = db.Exec(
 			"INSERT INTO ship VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26)",
-			ship.Id,
+			ship.ID,
 			ship.No,
 			ship.Name.NameKanji,
 			strings.Title(ship.Name.NameRomaji)+getSuffixString(ship.Name.Suffix),
